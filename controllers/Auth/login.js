@@ -30,19 +30,19 @@ exports.login = async (req, res) => {
         //generate jwt, after password matching
         if(await bcrypt.compare(password, userData.password)) {
             const token = jwt.sign(
-				{ email: userData.email, id: userData._id, role: userData.role },
-				process.env.JWT_SECRET,
-                {
-					expiresIn: "72h",
-				}
-			);
-            
+              { email: userData.email, id: userData._id, role: userData.role },
+              process.env.JWT_SECRET,
+              {
+                expiresIn: "24h",
+              }
+            );
+
             userData.password = undefined;
 
             //create cookie and send response
             const options = {
-                expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-                httpOnly:true,
+              expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
+              httpOnly: true,
             };
 
             res.cookie('token', token, options).status(200).json({
