@@ -1,11 +1,12 @@
 const OTP = require("../../models/OTP");
 const user = require("../../models/user");
+const mailSender=require('../../utils/mailSender')
 const otpGenerator = require("otp-generator");
 
 exports.sendotp = async (req, res) => {
   try {
     const { email } = req.body;
-
+    
     const checkPresent = await user.findOne({ email });
 
     // If user found with provided email
@@ -35,6 +36,9 @@ exports.sendotp = async (req, res) => {
     }
 
     const OTPCreated = await OTP.create({ email, otp });
+    console.log('sending the email');
+    await mailSender(email,'OTP Verification',`<h1>OTP is ${otp}</h1>`);
+  
 
     res.status(200).json({
       success: true,
